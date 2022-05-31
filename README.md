@@ -2,6 +2,11 @@
 
 Official implementation of our WACV 2022 [paper](https://openaccess.thecvf.com/content/WACV2022/papers/Hong_DAQ_Channel-Wise_Distribution-Aware_Quantization_for_Deep_Image_Super-Resolution_Networks_WACV_2022_paper.pdf).
 
+### Conda Environment setting
+```
+conda env create -f environment.yml --name DAQ
+conda activate DAQ
+```
 
 ### Dependencies
 * Python 3.6
@@ -13,6 +18,16 @@ Official implementation of our WACV 2022 [paper](https://openaccess.thecvf.com/c
 ### Codes
 Our implementation is based on [EDSR(PyTorch)](https://github.com/thstkdgus35/EDSR-PyTorch).
 
+
+### Train
+```
+sh train_EDSR_x4.sh
+```
+
+### Test
+```
+sh test_EDSR_x4.sh
+```
 
 ### Citation
 ```
