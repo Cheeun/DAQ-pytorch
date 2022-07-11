@@ -6,6 +6,7 @@ Official implementation of our WACV 2022 [paper](https://openaccess.thecvf.com/c
 ```
 conda env create -f environment.yml --name DAQ
 conda activate DAQ
+conda install -c anaconda scikit-image
 ```
 
 ### Dependencies
@@ -23,11 +24,14 @@ Our implementation is based on [EDSR(PyTorch)](https://github.com/thstkdgus35/ED
 ```
 sh train_EDSR_x4.sh
 ```
+Pretrained model to start training from can be accessed from [Google Drive](https://drive.google.com/drive/folders/19sWPy0IHISnHX8T4g1zH8ZHVgISU89t_?usp=sharing).
+
 
 ### Test
 ```
 sh test_EDSR_x4.sh
 ```
+Our pretrained model can be accessed from [Google Drive](https://drive.google.com/drive/folders/19sWPy0IHISnHX8T4g1zH8ZHVgISU89t_?usp=sharing).
 
 ### Citation
 ```
