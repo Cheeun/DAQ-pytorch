@@ -48,7 +48,7 @@ class ResBlock(nn.Module):
         super(ResBlock, self).__init__()
         self.a_bit = a_bit 
         self.w_bit = w_bit
-        self.bn = with_BN
+        # self.bn = with_BN
         
         
         self.quant1 = quantize.Quantization(bit=self.a_bit, qq_bit=qq_bit, finetune=finetune)
@@ -62,9 +62,9 @@ class ResBlock(nn.Module):
             self.conv1 = quantize.Conv2d_Q(n_feats, n_feats, kernel_size, stride=1, padding=1, bias=bias, dilation=1, groups=1, w_bit=w_bit, finetune=finetune)
             self.conv2 = quantize.Conv2d_Q(n_feats, n_feats, kernel_size, stride=1, padding=1, bias=bias, dilation=1, groups=1, w_bit=w_bit, finetune=finetune)
 
-        if with_BN:
-            self.BN1 = nn.BatchNorm2d(n_feats)
-            self.BN2 = nn.BatchNorm2d(n_feats)
+        # if with_BN:
+        #     self.BN1 = nn.BatchNorm2d(n_feats)
+        #     self.BN2 = nn.BatchNorm2d(n_feats)
 
             
         self.act = act
@@ -77,9 +77,10 @@ class ResBlock(nn.Module):
             out= self.quant1(x)
         else:
             out=x
+        
         out = self.conv1(out)
-        if self.bn:
-            out = self.BN1(out)
+        # if self.bn:
+        #     out = self.BN1(out)
 
 
         out1 = self.act(out)
@@ -89,8 +90,8 @@ class ResBlock(nn.Module):
             out1= self.quant2(out1)
 
         res = self.conv2(out1)
-        if self.bn:
-            res = self.BN2(res)
+        # if self.bn:
+        #     res = self.BN2(res)
         res = res.mul(self.res_scale)
 
         res += x

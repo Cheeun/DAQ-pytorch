@@ -12,7 +12,7 @@ uniform_steps = {0:2.0, 1: 1.0, 2: 0.5, 3:0.25, 4:0.125}
 laplacian_steps = {0:2.0,1: 1.414, 2: 1.087, 3:0.731, 4:0.456}
 gamma_steps = {0:2.0,1: 1.154, 2: 1.060, 3:0.796, 4:0.540}
 
-gaussian_steps = {0:2.0, 1: 1.596, 2: 0.996, 3: 0.586, 4: 0.335, 5:0.188, 6:0.104, 7:0.057, 8:0.031, 16:(1/8)}
+gaussian_steps = {0:2.0, 1: 1.596, 2: 0.996, 3: 0.586, 4: 0.335, 5:0.188, 6:0.104, 7:0.057, 8:0.031, 15:(1/8), 16:(1/8)}
 
 def gaussian_steps_func(b):
     s =torch.zeros(b.size()).cuda()
@@ -23,20 +23,26 @@ def gaussian_steps_func(b):
 
 
 class Quantization(nn.Module):
-    def __init__(self, bit, qq_bit=32, finetune=False):
+    def __init__(self, bit, qq_bit, finetune=False):
         super().__init__()
         self.a_bit = bit
         self.qq_bit = qq_bit
         if finetune:
-            self.step = 0.996 #for 2-bit finetuning
+            self.step= 1.596 # for 2 bit finetuning
+            self.sig_step = 0.057 # 
+
         else:
-            self.step = gaussian_steps_func(torch.tensor(self.a_bit))
+            self.step = gaussian_steps_func(torch.tensor(self.a_bit-1))
+            self.sig_step = gaussian_steps_func(torch.tensor(self.qq_bit-1))
+
 
 
     def forward(self, x ):
         a_bit = self.a_bit 
         if x.min() == 0 :
-            x_num = torch.sum(x>0,(2,3),True).float()+1            
+            ### After ReLU
+
+            x_num = torch.sum(x>0,(2,3),True).float()+1 
             mu_gt = torch.sum(x,(2,3),True)/x_num
             x2_mean = torch.sum(x**2,(2,3),True)/x_num
             sigma_gt = (x2_mean-mu_gt**2)**0.5
@@ -45,10 +51,14 @@ class Quantization(nn.Module):
             if self.qq_bit!=32:
                 mu_sigma = torch.mean(sigma,1,True).detach()
                 sig_sigma = torch.std(sigma,1,True).view(sigma.size(0),1,1,1).detach()
-                sig_c = sigma - mu_sigma
-                step = self.step* sig_sigma
+                
+                
+                step = self.sig_step* sig_sigma
                 thr = (2**self.qq_bit/2-0.5)*step
                 step = step + (step==0).detach()*(-1)
+                
+                sig_c = sigma - mu_sigma
+
                 y_sig = ((torch.round(sig_c/(step)+0.5)-0.5) * (step))*(step>0)
                 y_sig = torch.min(y_sig, thr)
                 y_sig = torch.max(y_sig, -thr)
@@ -58,17 +68,18 @@ class Quantization(nn.Module):
                 sigma = quantized_sig
 
             
-            x_c = x - mu
             lvls = 2 ** a_bit / 2
             step = self.step* sigma
             thr = (lvls-0.5)*step
             step = step + (step==0).detach()*(-1)
 
+            x_c = x - thr
+
             y = ((torch.round(x_c/(step)+0.5)-0.5) * (step))*(step>0)
             
-            y = torch.min(y, thr + torch.max(thr-mu,thr*0))
-            y = torch.max(y, torch.max(-mu,-thr))
-            quantized_x = y + mu
+            # y = torch.min(y, thr + torch.max(thr-mu,thr*0))
+            # y = torch.max(y, torch.max(-mu,-thr))
+            quantized_x = y + thr
 
         else:
             mu_gt = torch.mean(x,(2,3),True)
@@ -80,9 +91,10 @@ class Quantization(nn.Module):
             if self.qq_bit!=32:
                 mu_sigma = torch.mean(sigma,1,True).detach()
                 sig_sigma = torch.std(sigma,1,True).view(sigma.size(0),1,1,1).detach()
+
                 sig_c = sigma - mu_sigma
-                step = self.step* sig_sigma
-                thr = (2**a_bit/2-0.5)*step
+                step = self.sig_step* sig_sigma
+                thr = (2**self.qq_bit/2-0.5)*step
                 step = step + (step==0).detach()*(-1)
                 y_sig = ((torch.round(sig_c/(step)+0.5)-0.5) * (step))*(step>0)
                 y_sig = torch.min(y_sig, thr)
@@ -115,9 +127,9 @@ class Conv2d_Q(nn.Conv2d):
         self.w_bit = w_bit 
 
         if finetune:
-            self.step = 0.996 # for 2-bit finetuning
+            self.step= 1.596 # for 2 bit finetuning
         else:
-            self.step = gaussian_steps[self.w_bit]
+            self.step = gaussian_steps[self.w_bit-1]
       
 
     def forward(self,x):
