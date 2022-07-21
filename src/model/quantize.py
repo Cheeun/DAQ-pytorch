@@ -130,6 +130,7 @@ class Conv2d_Q(nn.Conv2d):
             self.step= 1.596 # for 2 bit finetuning
         else:
             self.step = gaussian_steps[self.w_bit-1]
+        
       
 
     def forward(self,x):
