@@ -29,21 +29,24 @@ Pretrained model to start training from can be accessed from [Google Drive](http
 
 ### Test
 ```
-sh test_EDSR_x4.sh
+sh test.sh edsr_baseline 2 2 4 (edsr_baseline w2a2qq4)
+sh test.sh edsr_baseline 3 3 4 (edsr_baseline w3a3qq4)
+sh test.sh edsr_baseline 4 4 4 (edsr_baseline w4a4qq4)
+sh test.sh edsr_full 2 2 8 (edsr_full w2a2qq8)
 ```
 Our pretrained model can be accessed from [Google Drive](https://drive.google.com/drive/folders/19sWPy0IHISnHX8T4g1zH8ZHVgISU89t_?usp=sharing).
 
-## Results
+## Additional Results
 
 Our model achieves the following performance (PSNR / SSIM) when trained for 60 epochs :
 
   
 | Model           | Precision (w/a) |     Set5      |     Set14     |     B100      |   Urban100    |
 | --------------- |:---------------:|:-------------:|:-------------:|:-------------:|:-------------:|
-| **EDSR** (x4)       |     32 / 32     | 32.10 / 0.894 | 28.58 / 0.781 | 27.56 / 0.736 | 26.04 / 0.785 |
-| EDSR-DAQ        |      4 / 4      | 31.85 / 0.887 | 28.38 / 0.776 | 27.42 / 0.732 | 25.73 / 0.772 |
-| EDSR-DAQ        |      3 / 3      | 31.66 / 0.884 | 28.19 / 0.771 | 27.28 / 0.728 | 25.40 / 0.762 |
-| EDSR-DAQ        |      2 / 2      | 31.01 / 0.871 | 27.89 / 0.762 | 27.09 / 0.719 | 24.88 / 0.740 |
+| **EDSR-baseline** (x4)   |     32 / 32     | 32.10 / 0.894 | 28.58 / 0.781 | 27.56 / 0.736 | 26.04 / 0.785 |
+| EDSR-baseline-DAQ        |      4 / 4      | 31.85 / 0.887 | 28.38 / 0.776 | 27.42 / 0.732 | 25.73 / 0.772 |
+| EDSR-baseline-DAQ        |      3 / 3      | 31.66 / 0.884 | 28.19 / 0.771 | 27.28 / 0.728 | 25.40 / 0.762 |
+| EDSR-baseline-DAQ        |      2 / 2      | 31.01 / 0.871 | 27.89 / 0.762 | 27.09 / 0.719 | 24.88 / 0.740 |
 
 
 | Model           | Precision (w/a) |     Set5      |     Set14     |     B100      |   Urban100    |
