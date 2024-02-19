@@ -11,11 +11,11 @@ edsr_full(){
     --model EDSR --scale $scale \
     --n_feats 256 --n_resblocks 32 --res_scale 0.1 \
     --data_test Set5+Set14+B100+Urban100 --data_range 1-800/801-810 --dir_data $DATA_DIR \
-    --pre_train ../pretrained_model/edsr_full-x$scale-daq-w2a2qq8.pt \
+    --pre_train ../pretrained_model/edsr_full-x$scale-daq-w$1a$2qq$3.pt \
     --n_threads 6 --n_GPUs 1 \
-    --save edsr_full-x$scale-daq-w2a2qq8-test \
-    --quantize_a 2 --quantize_w 2 \
-    --quantize_quantization 8 \
+    --save edsr_full-x$scale-daq-w$2a$1qq$3-test \
+    --quantize_a $1 --quantize_w $2 \
+    --quantize_quantization $3 \
     # 
 }
 
@@ -24,12 +24,12 @@ edsr_baseline(){
     --test_only \
     --model EDSR --scale $scale \
     --n_feats 64 --n_resblocks 16 --res_scale 1.0 \
-    --data_test Set5+Set14+B100+Urban100 --data_range 1-800/801-810 --dir_data /mnt/disk1/cheeun914/datasets/ \
-    --pre_train ../pretrained_model/edsr_baseline-x$scale-daq-w2a2qq4.pt \
+    --data_test Set5+Set14+B100+Urban100 --data_range 1-800/801-810 --dir_data $DATA_DIR \
+    --pre_train ../pretrained_model/edsr_baseline-x$scale-daq-w$1a$2qq$3.pt \
     --n_threads 6 --n_GPUs 1 \
-    --save edsr_baseline-x$scale-daq-w2a2qq4-test \
-    --quantize_a 2 --quantize_w 2 \
-    --quantize_quantization 4 \
+    --save edsr_baseline-x$scale-daq-w$2a$1qq$3-test \
+    --quantize_a $1 --quantize_w $2 \
+    --quantize_quantization $3 \
     # 
 }
 
